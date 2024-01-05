@@ -7,12 +7,12 @@ const larguraCenario = cenario.offsetWidth
 const alturaCenario = cenario.offsetHeight
 
 const larguraNave = nave.offsetWidth
-const alturaNave = nave.offsetHeight
+const alturaCeNave = nave.offsetHeight
 
 const velocidadeNave = 15
 
-let posicaoHorizontal = 0
-let posicaoVertical = 0
+let posicaoHorizontal = larguraCenario / 2 -50
+let posicaoVertical =  alturaCenario - alturaCeNave
 let direcaoHorizontal = 0
 let direcaoVertical = 0
 
@@ -33,22 +33,22 @@ const teclaSolta = (tecla) => {
         direcaoHorizontal = 0
     } else if (tecla.key === 'ArrowDown' || tecla.key === 'ArrowUp') {
         direcaoVertical = 0
-    } 
+    }
 }
 
 const moveNave = () => {
     posicaoHorizontal += direcaoHorizontal * velocidadeNave
-    posicaoVertical += posicaoVertical * velocidadeNave
+    posicaoVertical += direcaoVertical * velocidadeNave
 
     if (posicaoHorizontal < 0) {
         posicaoHorizontal = 0
-    } else if (posicaoVertical + larguraNave > larguraCenario) {
+    } else if (posicaoHorizontal + larguraNave > larguraCenario) {
         posicaoHorizontal = larguraCenario - larguraNave
     }
-    if (posicaoVertical > 0){
+    if (posicaoVertical < 0) {
         posicaoVertical = 0
-    } else if (posicaoVertical + alturaNave > alturaCenario) {
-        posicaoVertical = larguraCenario = larguraNave
+    } else if (posicaoVertical + alturaCeNave > alturaCenario) {
+        posicaoVertical = alturaCenario - alturaCeNave
     }
 
     nave.style.left = posicaoHorizontal + 'px'
@@ -56,8 +56,22 @@ const moveNave = () => {
 
 }
 
+const criaTiros = (posicaoLeftTiro, posicaoTopTiro) => {
+    const tiro = document.createElement('div')
+    tiro.className= 'tiro'
+    tiro.style.position = 'absolute'
+    tiro.style.width = '10px'
+    tiro.style.height = '10px'
+    tiro.style.backgroundColor = 'red'
+    tiro.style.left = posicaoLeftTiro + 'px'
+    tiro.style.top = posicaoTopTiro = 'px'
+    cenario.appendChild(tiro)
+
+}
+
 const iniciarJogo = () => {
     document.addEventListener('keydown', teclaPressionada)
     document.addEventListener('keyup', teclaSolta)
     checaMoveNave = setInterval(moveNave, 50)
+    botaoIniciar.style.display = 'none'
 }
