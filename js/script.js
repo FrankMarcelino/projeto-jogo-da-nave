@@ -3,6 +3,7 @@ const botaoIniciar = document.getElementById('iniciar')
 const cenario = document.getElementById('cenario')
 const nave = document.getElementById('nave')
 const vida = document.getElementById('vida')
+const pontos = document.getElementById('pontos')
 
 const larguraCenario = cenario.offsetWidth
 const alturaCenario = cenario.offsetHeight
@@ -24,6 +25,8 @@ let checaColisao
 let estaAtirando = false
 
 let vidaAtual = 100
+let pontosAtual = 0
+let tiroAtual = 0
 
 let posicaoHorizontal = larguraCenario / 2 - 50
 let posicaoVertical = alturaCenario - alturaCeNave
@@ -70,7 +73,10 @@ const moveNave = () => {
 }
 
 const atirar = () => {
-    if (estaAtirando) {
+    const dalayTiro = Date.now()
+    const atrasoTiro = dalayTiro - tiroAtual
+    if (estaAtirando && atrasoTiro >= 100) {
+        tiroAtual = Date.now()
         criaTiros(posicaoHorizontal + 45, posicaoVertical - 10)
     }
 }
@@ -161,6 +167,9 @@ const colisao = () => {
             const colisaoNaveInimiga = naveInimiga.getBoundingClientRect()
             const colisaoTiro = tiro.getBoundingClientRect()
 
+            const posicaotNaveInimigaLeft = naveInimiga.offsetLeft
+            const posicaoNaveInimigaTop =  naveInimiga.offsetTop
+
             let vidaAtualNaveInimiga = parseInt(naveInimiga.getAttribute('data-vida'), 10)
            
             if (
@@ -173,13 +182,31 @@ const colisao = () => {
                 console.log(vidaAtualNaveInimiga)
                 tiro.remove()
                 if (vidaAtualNaveInimiga === 0) {
+                    pontosAtual += 10
+                    pontos.textContent = `Pontos: ${pontosAtual}`
                     naveInimiga.remove()
+                    explosaoNaveInimiga(posicaotNaveInimigaLeft, posicaoNaveInimigaTop)
                 }else{
                     naveInimiga.setAttribute('data-vida', vidaAtualNaveInimiga)
                 }
             }
         })
     })
+}
+
+const explosaoNaveInimiga = (posicaoLeftNaveInimiga, posicaoTopNaveInimiga) => {
+    const explosaoNaveDesstruida = document.createElement('div')
+    explosaoNaveDesstruida.className = 'explosao'
+    explosaoNaveDesstruida.style.position = 'absolute'
+    explosaoNaveDesstruida.style.width = '100px'
+    explosaoNaveDesstruida.style.height = '100px'
+    explosaoNaveDesstruida.style.backgroundImage = 'url(../imagens/eliminado.gif)'
+    explosaoNaveDesstruida.style.backgroundPosition = 'center'
+    explosaoNaveDesstruida.style.backgroundRepeat = 'no-repeat'
+    explosaoNaveDesstruida.style.backgroundSize = 'contain'
+    explosaoNaveDesstruida.style.left = posicaoLeftNaveInimiga + 'px'
+    explosaoNaveDesstruida.style.top = posicaoTopNaveInimiga + 'px'
+    cenario.appendChild(explosaoNaveDesstruida)
 }
 
 const gameOver = () => {
@@ -226,4 +253,5 @@ const iniciarJogo = () => {
     checaTiros = setInterval(atirar, 10) 
     checaColisao = setInterval(colisao, 10)
     botaoIniciar.style.display = 'none'
+    cenario.style.animation = 'animarCenario 20s infinite linear' 
 }

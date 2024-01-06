@@ -41,3 +41,12 @@
     padding: 10px 20px;
     cursor: pointer;
 }
+
+@keyframes animarCenario {
+    from {
+        background-position-y: 100%;
+    }
+    to {
+        background-position-y: 0%;
+    }
+}
