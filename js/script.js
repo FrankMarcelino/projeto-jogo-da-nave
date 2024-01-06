@@ -106,6 +106,19 @@ const criaTiros = (posicaoLeftTiro, posicaoTopTiro) => {
     tiro.style.top = posicaoTopTiro + 'px'
     tiro.style.backgroundColor = 'red'
     cenario.appendChild(tiro)
+    audioTiros()
+}
+
+const audioTiros = () => {
+    const audioDoTiro = document.createElement('audio')
+    audioDoTiro.className = 'audiotiro'
+    audioDoTiro.setAttribute('src','../audios/tiro.mp3')
+    audioDoTiro.play()
+    cenario.appendChild(audioDoTiro)
+    audioDoTiro.addEventListener('ended', () =>{
+        audioDoTiro.remove()
+    })
+
 }
 
 const moveTiros = () => {
@@ -206,7 +219,22 @@ const explosaoNaveInimiga = (posicaoLeftNaveInimiga, posicaoTopNaveInimiga) => {
     explosaoNaveDesstruida.style.backgroundSize = 'contain'
     explosaoNaveDesstruida.style.left = posicaoLeftNaveInimiga + 'px'
     explosaoNaveDesstruida.style.top = posicaoTopNaveInimiga + 'px'
+    audioExplosaoNaveInimiga()
     cenario.appendChild(explosaoNaveDesstruida)
+    setTimeout(() => {
+        cenario.removeChild(explosaoNaveDesstruida)
+    },500)
+  
+}
+
+const audioExplosaoNaveInimiga = () => {
+    const explosaoNaveDesstruida = document.createElement('audio')
+    explosaoNaveDesstruida.setAttribute('src', '../audios/destruido.mp3')
+    explosaoNaveDesstruida.play()
+    cenario.appendChild(explosaoNaveDesstruida)
+    explosaoNaveDesstruida.addEventListener('ended', () => {
+        explosaoNaveDesstruida.remove()
+    })
 }
 
 const gameOver = () => {
