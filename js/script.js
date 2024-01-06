@@ -19,6 +19,7 @@ let checaMoveNaveInimiga
 let chacaMoveTiro
 let checaTiros
 let checaNaveInimiga
+let checaColisao
 
 let estaAtirando = false
 
@@ -119,6 +120,7 @@ const naveInimigas =  () => {
     const naveInimiga = document.createElement('div')
     naveInimiga.className = 'naveInimiga'
     naveInimiga.style.position = 'absolute'
+    naveInimiga.setAttribute('data-vida', 5)
     naveInimiga.style.width = '100px'
     naveInimiga.style.height = '100px'
     naveInimiga.style.backgroundImage = 'url(../imagens/inimigo.gif)'
@@ -140,7 +142,7 @@ const moveNaveInimigas = () => {
         
             console.log(posicaoTopNaveInimiga[index])
             if (posicaoTopNaveInimiga > alturaCenario){
-                vidaAtual -= 50
+                vidaAtual -= 5
                 if (vidaAtual === 0) {
                     gameOver()
                 }
@@ -151,6 +153,35 @@ const moveNaveInimigas = () => {
     })
 }
 
+const colisao = () => {
+    const todasNaveInimigas = document.querySelectorAll('.naveInimiga')
+    const todosTiros = document.querySelectorAll('.tiro')
+    todasNaveInimigas.forEach((naveInimiga) => {
+        todosTiros.forEach((tiro) => {
+            const colisaoNaveInimiga = naveInimiga.getBoundingClientRect()
+            const colisaoTiro = tiro.getBoundingClientRect()
+
+            let vidaAtualNaveInimiga = parseInt(naveInimiga.getAttribute('data-vida'), 10)
+           
+            if (
+                colisaoNaveInimiga.left < colisaoTiro.right &&
+                colisaoNaveInimiga.right > colisaoTiro.left &&
+                colisaoNaveInimiga.top < colisaoTiro.bottom &&
+                colisaoNaveInimiga.bottom > colisaoTiro.top
+            ) {
+                vidaAtualNaveInimiga--
+                console.log(vidaAtualNaveInimiga)
+                tiro.remove()
+                if (vidaAtualNaveInimiga === 0) {
+                    naveInimiga.remove()
+                }else{
+                    naveInimiga.setAttribute('data-vida', vidaAtualNaveInimiga)
+                }
+            }
+        })
+    })
+}
+
 const gameOver = () => {
     document.removeEventListener('keydown', teclaPressionada)
     document.removeEventListener('keyup', teclaSolta)
@@ -158,7 +189,8 @@ const gameOver = () => {
     clearInterval(checaMoveNaveInimiga)
     clearInterval(checaNaveInimiga)
     clearInterval(checaTiros)
-    
+    clearInterval(checaColisao)
+
     const perdeu =document.createElement('div')
     perdeu.style.position = 'absolute'
     perdeu.innerHTML = 'Você Perdeu!'
@@ -166,6 +198,8 @@ const gameOver = () => {
     perdeu.style.color  = 'red'
     perdeu.style.left = '50%'
     perdeu.style.top = '50%' 
+    perdeu.style.padding = '10px 20px'
+    perdeu.style.borderRadius = '5px'
     perdeu.style.transform = 'translate(-50%, 50%)'
     cenario.appendChild(perdeu)
     cenario.removeChild(nave)
@@ -188,6 +222,8 @@ const iniciarJogo = () => {
     checaMoveNaveInimiga = setInterval(moveNaveInimigas, 50)
     chacaMoveTiro = setInterval(moveTiros, 50)
     checaNaveInimiga = setInterval(naveInimigas, 2500)
-    checaTiros = setInterval(atirar, 10)
+    
+    checaTiros = setInterval(atirar, 10) 
+    checaColisao = setInterval(colisao, 10)
     botaoIniciar.style.display = 'none'
 }
