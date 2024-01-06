@@ -22,6 +22,8 @@ let checaNaveInimiga
 
 let estaAtirando = false
 
+let vidaAtual = 100
+
 let posicaoHorizontal = larguraCenario / 2 - 50
 let posicaoVertical = alturaCenario - alturaCeNave
 let direcaoHorizontal = 0
@@ -137,10 +139,45 @@ const moveNaveInimigas = () => {
             inimigo[index].style.top = posicaoTopNaveInimiga + 'px'
         
             console.log(posicaoTopNaveInimiga[index])
-            if (posicaoTopNaveInimiga > alturaCenario - 100){
+            if (posicaoTopNaveInimiga > alturaCenario){
+                vidaAtual -= 50
+                if (vidaAtual === 0) {
+                    gameOver()
+                }
+                vida.textContent = `Vida: ${vidaAtual}`
                 inimigo[index].remove()
             } 
         }
+    })
+}
+
+const gameOver = () => {
+    document.removeEventListener('keydown', teclaPressionada)
+    document.removeEventListener('keyup', teclaSolta)
+    clearInterval(checaMoveNave)
+    clearInterval(checaMoveNaveInimiga)
+    clearInterval(checaNaveInimiga)
+    clearInterval(checaTiros)
+    
+    const perdeu =document.createElement('div')
+    perdeu.style.position = 'absolute'
+    perdeu.innerHTML = 'Você Perdeu!'
+    perdeu.style.backgroundColor = 'white'
+    perdeu.style.color  = 'red'
+    perdeu.style.left = '50%'
+    perdeu.style.top = '50%' 
+    perdeu.style.transform = 'translate(-50%, 50%)'
+    cenario.appendChild(perdeu)
+    cenario.removeChild(nave)
+    
+    const naveInimigas = document.querySelectorAll('.naveInimiga')
+    naveInimigas.forEach((inimigos) => {
+        inimigos.remove()
+    })
+
+    const tiros = document.querySelectorAll('.tiro') 
+    tiros.forEach((tiro) => {
+        tiro.remove()
     })
 }
 
