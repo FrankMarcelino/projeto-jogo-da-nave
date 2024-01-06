@@ -54,7 +54,7 @@ const moveNave = () => {
     nave.style.left = posicaoHorizontal + 'px'
     nave.style.top = posicaoVertical + 'px'
 
-}
+} 
 
 const criaTiros = (posicaoLeftTiro, posicaoTopTiro) => {
     const tiro = document.createElement('div')
