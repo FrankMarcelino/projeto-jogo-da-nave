@@ -11,6 +11,8 @@ const alturaCeNave = nave.offsetHeight
 
 const velocidadeNave = 15
 
+let estaAtirando = false
+
 let posicaoHorizontal = larguraCenario / 2 -50
 let posicaoVertical =  alturaCenario - alturaCeNave
 let direcaoHorizontal = 0
@@ -53,25 +55,45 @@ const moveNave = () => {
 
     nave.style.left = posicaoHorizontal + 'px'
     nave.style.top = posicaoVertical + 'px'
-
 } 
+
+const atirar = () => {
+    if(estaAtirando) {
+        criaTiros(posicaoHorizontal + 45, posicaoVertical - 10)
+    }
+}
+
+document.addEventListener('keydown', (tecla) => {
+    if (tecla.key === ' ') {
+        estaAtirando = true
+           
+    }
+
+})
+
+document.addEventListener('keyup', (tecla) => {
+    if (tecla.key === ' ') {
+        estaAtirando = false
+    }
+})
+
 
 const criaTiros = (posicaoLeftTiro, posicaoTopTiro) => {
     const tiro = document.createElement('div')
-    tiro.className= 'tiro'
+    tiro.className = 'tiro'
     tiro.style.position = 'absolute'
     tiro.style.width = '10px'
     tiro.style.height = '10px'
-    tiro.style.backgroundColor = 'red'
     tiro.style.left = posicaoLeftTiro + 'px'
-    tiro.style.top = posicaoTopTiro = 'px'
-    cenario.appendChild(tiro)
-
+    tiro.style.top = posicaoTopTiro + 'px'
+    tiro.style.backgroundColor = 'red'
+    cenario.appendChild(tiro) 
 }
 
 const iniciarJogo = () => {
     document.addEventListener('keydown', teclaPressionada)
     document.addEventListener('keyup', teclaSolta)
     checaMoveNave = setInterval(moveNave, 50)
+    checaTiros = setInterval(atirar, 10)
     botaoIniciar.style.display = 'none'
 }
