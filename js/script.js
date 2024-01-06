@@ -2,6 +2,7 @@ const botaoIniciar = document.getElementById('iniciar')
 
 const cenario = document.getElementById('cenario')
 const nave = document.getElementById('nave')
+const vida = document.getElementById('vida')
 
 const larguraCenario = cenario.offsetWidth
 const alturaCenario = cenario.offsetHeight
@@ -10,11 +11,19 @@ const larguraNave = nave.offsetWidth
 const alturaCeNave = nave.offsetHeight
 
 const velocidadeNave = 15
+const velocidadeTiro = 20
+const velocidadeNaveInimiga = 5
+
+let checaMoveNave
+let checaMoveNaveInimiga
+let chacaMoveTiro
+let checaTiros
+let checaNaveInimiga
 
 let estaAtirando = false
 
-let posicaoHorizontal = larguraCenario / 2 -50
-let posicaoVertical =  alturaCenario - alturaCeNave
+let posicaoHorizontal = larguraCenario / 2 - 50
+let posicaoVertical = alturaCenario - alturaCeNave
 let direcaoHorizontal = 0
 let direcaoVertical = 0
 
@@ -55,10 +64,10 @@ const moveNave = () => {
 
     nave.style.left = posicaoHorizontal + 'px'
     nave.style.top = posicaoVertical + 'px'
-} 
+}
 
 const atirar = () => {
-    if(estaAtirando) {
+    if (estaAtirando) {
         criaTiros(posicaoHorizontal + 45, posicaoVertical - 10)
     }
 }
@@ -66,7 +75,7 @@ const atirar = () => {
 document.addEventListener('keydown', (tecla) => {
     if (tecla.key === ' ') {
         estaAtirando = true
-           
+
     }
 
 })
@@ -87,13 +96,61 @@ const criaTiros = (posicaoLeftTiro, posicaoTopTiro) => {
     tiro.style.left = posicaoLeftTiro + 'px'
     tiro.style.top = posicaoTopTiro + 'px'
     tiro.style.backgroundColor = 'red'
-    cenario.appendChild(tiro) 
+    cenario.appendChild(tiro)
+}
+
+const moveTiros = () => {
+    const tiros = document.querySelectorAll('.tiro')
+    tiros.forEach ((element,index) =>{
+        if (element){
+            let posicaoTopTiro = tiros[index].offsetTop
+            posicaoTopTiro -= velocidadeTiro
+            tiros[index].style.top = posicaoTopTiro + 'px'
+            if (posicaoTopTiro < -10) {
+                tiros[index].remove()
+            }
+        }
+    })
+}
+
+const naveInimigas =  () => {
+    const naveInimiga = document.createElement('div')
+    naveInimiga.className = 'naveInimiga'
+    naveInimiga.style.position = 'absolute'
+    naveInimiga.style.width = '100px'
+    naveInimiga.style.height = '100px'
+    naveInimiga.style.backgroundImage = 'url(../imagens/inimigo.gif)'
+    naveInimiga.style.backgroundPosition = 'center'
+    naveInimiga.style.backgroundRepeat = 'no-repeat'
+    naveInimiga.style.backgroundSize = 'contain'
+    naveInimiga.style.left  = Math.floor(Math.random() * (larguraCenario - larguraNave)) + 'px'
+    naveInimiga.style.top + '-100px'
+    cenario.appendChild(naveInimiga)
+}
+
+const moveNaveInimigas = () => {
+    const inimigo = document.querySelectorAll('.naveInimiga')
+    inimigo.forEach((element, index) => {
+        if(element){
+            let posicaoTopNaveInimiga = inimigo[index].offsetTop
+            posicaoTopNaveInimiga += velocidadeNaveInimiga
+            inimigo[index].style.top = posicaoTopNaveInimiga + 'px'
+        
+            console.log(posicaoTopNaveInimiga[index])
+            if (posicaoTopNaveInimiga > alturaCenario - 100){
+                inimigo[index].remove()
+            } 
+        }
+    })
 }
 
 const iniciarJogo = () => {
     document.addEventListener('keydown', teclaPressionada)
     document.addEventListener('keyup', teclaSolta)
     checaMoveNave = setInterval(moveNave, 50)
+    checaMoveNaveInimiga = setInterval(moveNaveInimigas, 50)
+    chacaMoveTiro = setInterval(moveTiros, 50)
+    checaNaveInimiga = setInterval(naveInimigas, 2500)
     checaTiros = setInterval(atirar, 10)
     botaoIniciar.style.display = 'none'
 }
