@@ -4,6 +4,7 @@ const cenario = document.getElementById('cenario')
 const nave = document.getElementById('nave')
 const vida = document.getElementById('vida')
 const pontos = document.getElementById('pontos')
+const audioTemaJogo = new Audio('../audios/missaoespaco.mp3')
 
 const larguraCenario = cenario.offsetWidth
 const alturaCenario = cenario.offsetHeight
@@ -282,4 +283,7 @@ const iniciarJogo = () => {
     checaColisao = setInterval(colisao, 10)
     botaoIniciar.style.display = 'none'
     cenario.style.animation = 'animarCenario 20s infinite linear' 
+
+    audioTemaJogo.loop = true;
+    audioTemaJogo.play()
 }
